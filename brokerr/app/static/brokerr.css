@@ -1,0 +1,42 @@
+ul {
+    list-style-type: none;
+}
+
+.tracker-card-outer {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.p-close{
+    margin-bottom: 0.5rem;
+}
+
+.tracker-card-inner {
+    max-height: 750px;
+    overflow: hidden;
+}
+
+.carousel-control-next {
+    position: absolute;
+    z-index: 99;
+}
+.carousel-control-prev {
+    position: absolute;
+    z-index: 99;
+}
+
+.carousel-control-prev-icon {
+    filter: invert(0) grayscale(100) !important;
+}
+.carousel-control-next-icon {
+    filter: invert(0) grayscale(100) !important;
+}
+
+.modal-x {
+    filter: none !important;
+}
+
+.card-body {
+    position: relative;
+    z-index: 100;
+}

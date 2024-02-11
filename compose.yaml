@@ -1,0 +1,11 @@
+services:
+  brokerr:
+    volumes:
+      - /data/configs/brokerr:/config
+    build:
+      context: .
+    ports:
+      - 6363:6363
+    environment:
+      - PUID=1000
+      - PGID=1000
