@@ -1,7 +1,6 @@
 import yaml
 import os
 from datetime import datetime
-from pyotp import *
 import time
 from contextlib import closing
 from selenium import webdriver

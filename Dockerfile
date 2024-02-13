@@ -39,7 +39,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     pip install --no-build-isolation -r requirements.txt
 
-## TODO: Get a slimmer build working with multi-stage build
+# TODO: Get a slimmer build working with multi-stage build
 # Final stage
 # FROM python:3.12.2-slim
 
@@ -51,11 +51,11 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 COPY brokerr /brokerr
 
-WORKDIR /brokerr/app
+WORKDIR /brokerr
 
 EXPOSE 6363
 
 # Switch to the specified user
 #USER myuser:mygroup
 
-CMD ["python3", "main.py" ]
+CMD ["gunicorn", "-c", "python:config.gunicorn", "app.app:create_app()"]

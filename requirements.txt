@@ -1,4 +1,7 @@
-pyotp==2.9.0
 PyYAML==6.0.1
 selenium==4.17.2
 Flask==3.0.2
+celery==5.3.6
+gunicorn==21.2.0
+redis==5.0.1
+flask-debugtoolbar==0.14.1
