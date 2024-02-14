@@ -26,7 +26,7 @@ WORKDIR /
 
     # First remove firefox snap package so we can install DEB
 RUN apt-get update && apt-get install -y \
-    firefox-esr wget python3-pip \
+    firefox-esr wget python3-pip supervisor \
     && wget $GECKODRIVER_URL -O geckodriver-v0.34.0-linux64.tar.gz && \
     tar -xzf geckodriver-v0.34.0-linux64.tar.gz -C /usr/bin && \
     chmod +x /usr/bin/geckodriver && \
@@ -34,6 +34,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get purge -y --auto-remove wget \
     && export PATH=$PATH:/usr/bin/
+
+# Copy the supervisor configuration file
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
     
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
@@ -58,4 +61,4 @@ EXPOSE 6363
 # Switch to the specified user
 #USER myuser:mygroup
 
-CMD ["gunicorn", "-c", "python:config.gunicorn", "app.app:create_app()"]
+CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisor/supervisord.conf"]

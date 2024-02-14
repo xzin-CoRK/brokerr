@@ -25,11 +25,17 @@ def create_celery_app(app=None):
         def __call__(self, *args, **kwargs):
             with app.app_context():
                 return self.run(*args, **kwargs)
+        
+        # Override the after_return method so that it logs the last successful run in the sqlite database
+        def after_return(self, status, retval, task_id, args, kwargs, einfo):
+            with open("/config/celery.log", "a") as file:
+                file.write(f"Task {self.name} just finished | task id: {task_id} | status: {status}\n")
 
     celery = Celery(app.import_name, task_cls=FlaskTask)
     celery.conf.update(app.config.get("CELERY_CONFIG", {}))
     celery.set_default()
     app.extensions["celery"] = celery
+    celery.autodiscover_tasks(["worker"])
 
     return celery
 

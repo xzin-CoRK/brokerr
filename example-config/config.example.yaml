@@ -1,9 +1,0 @@
-trackers:
-  - FNP:
-    login_url: "https://fearnopeer.com/login"
-    username: "me"
-    password: "mypassword"
-    2FA_key: ""
-    urls_to_screenshot:
-      - "https://fearnopeer.com/users/xzin"
-      - "https://fearnopeer.com/users/xzin/torrents?perPage=25&sortField=actual_ratio"

@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.append('/brokerr')
 
-from common import setup
+from common import dataLayer
 from common import common
 
 tracker_bp = Blueprint("tracker", __name__, template_folder="../templates")
@@ -16,7 +16,7 @@ def tracker(tracker_name):
     # load tracker stats from db
     last_insured = None
     num_insured = None
-    res = setup.get_tracker_stats(tracker_name)
+    res = dataLayer.get_tracker_stats(tracker_name)
     if res:
         last_insured, num_insured = res
 

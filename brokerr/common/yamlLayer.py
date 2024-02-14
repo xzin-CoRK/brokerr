@@ -1,7 +1,11 @@
 import yaml
 
 def get_config() -> dict:
-    '''Returns a dict representation of the YAML config file'''
+    """
+    Returns a dict representation of the YAML config file
+
+    :returns: dict representation of config file
+    """
     with open("/config/config.yaml") as stream:
         try:
             config = yaml.safe_load(stream)

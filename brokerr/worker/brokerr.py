@@ -15,7 +15,8 @@ from selenium.webdriver.remote.webelement import WebElement
 import sys
 sys.path.append('/brokerr')
 from common import common
-from common import setup
+from common import dataLayer
+from common import yamlLayer
 
 class brokerrWorker():
     def __init__(self) -> None:
@@ -23,12 +24,9 @@ class brokerrWorker():
         self.driver = None
     
     def __enter__(self):
-        # read the yaml config
-        with open("/config/config.yaml") as stream:
-            try:
-                self.config = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                common.log_error(f"ERROR: Problem reading YAML config. {exc}")
+
+        # get the config information
+        self.config = yamlLayer.get_config()
         
         # set up the webdriver
         opts = Options()
@@ -62,7 +60,7 @@ class brokerrWorker():
         error_count = 0
         
         # Ensure screenshot directory exists
-        setup_env(tracker_name)
+        setup_screenshot_directory(tracker_name)
 
         tracker_to_capture = None
 
@@ -120,7 +118,7 @@ class brokerrWorker():
             self.driver.get_full_page_screenshot_as_file(image_path)
 
             # Store info about our successful capture in the db
-            setup.store_success(tracker_name, timestamp, image_path)
+            dataLayer.store_success(tracker_name, timestamp, image_path)
 
             success_count += 1
         
@@ -134,7 +132,12 @@ class brokerrWorker():
         return response
 
 def get_login_button(driver) -> (WebElement | None):
-    '''Iterates through known XPATH routes to find the tracker's login button'''
+    """"
+    Iterates through known XPATH routes to find the tracker's login button
+
+    :param driver: the webdriver
+    :return: WebElement of the login button, or None if not found
+    """
     xpath_list = [
         "//input[@name='login']",                       # Gazelle-based trackers
         "//button[@class='auth-form__primary-button']"  # UNIT3D-based trackers
@@ -149,8 +152,12 @@ def get_login_button(driver) -> (WebElement | None):
     
     return None
 
+def setup_screenshot_directory(tracker = '') -> None:
+    """
+    Sets up the screenshots directory if it doesn't exist. Also creates a subdirectory for the specified tracker
 
-def setup_env(tracker = ''):
+    :param tracker: subdirectory to create
+    """
     screenshots_directory = '/config/screenshots'
 
     if tracker:
