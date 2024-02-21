@@ -5,8 +5,8 @@ import os
 import sys
 sys.path.append('/brokerr')
 
-from common import dataLayer
-from common import common
+from utils import dataLayer
+from utils import common
 
 tracker_bp = Blueprint("tracker", __name__, template_folder="../templates")
 

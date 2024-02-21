@@ -1,15 +1,14 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, send_from_directory
-import os
 import sys
 
 sys.path.append('/brokerr')
 from worker import brokerr
 
-api_bp = Blueprint("api", __name__)
+api_blueprint = Blueprint("api", __name__)
 
 
-@api_bp.route('/captureProof', methods=['POST'])
+@api_blueprint.route('/captureProof', methods=['POST'])
 def captureProof():
     data = request.get_json()
     tracker = data.get('tracker')
@@ -21,7 +20,7 @@ def captureProof():
 
     return jsonify(response)
 
-@api_bp.route('/images')
+@api_blueprint.route('/images')
 def get_image():
     '''Returns a screenshot based on the tracker name and filename query string arguments'''
     tracker_name = request.args.get('tracker_name')

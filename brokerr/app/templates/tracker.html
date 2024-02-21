@@ -40,47 +40,6 @@
             <span class="visually-hidden" role="status">Capturing...</span>
             <span>Capture Now</span>
         </button>
-        <script>
-            function captureProof(tracker) {
-                // Disable the capture button while it works
-                button = document.getElementById('captureButton')
-                button.disabled = !button.disabled
-
-                //Show a status spinner
-                var spans = button.children
-                for (var i = 0; i < spans.length; i++) {
-                    spans[i].classList.toggle('visually-hidden')
-                }
-
-                //Call the worker
-                fetch('/captureProof', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ tracker: tracker })
-                }).then(response => response.json())
-                .then(data => {
-                    // Update the modal content with the data received from the server
-                    var modalBody = document.getElementById('captureModalMessage');
-                    modalBody.innerHTML = data.message;
-
-                    //Attach to close event to reload the page
-                    var modal = document.getElementById('captureModal');
-                    modal.addEventListener('hidden.bs.modal', function () {
-                        // Reload the page when the modal is closed
-                        location.reload();
-                    });
-
-                    // Show the modal
-                    bsModal = new bootstrap.Modal(modal);
-                    bsModal.show();
-                })
-                .catch(error => {
-                        console.log('Error capturing proof:', error)
-                    })
-            }
-        </script>
     </div>
 </div>
 

@@ -4,7 +4,7 @@ from contextlib import closing
 from redis import Redis
 from config.settings import REDIS_URL
 
-redis = Redis.from_url(REDIS_URL)
+redis_db = Redis.from_url(REDIS_URL)
 
 def setup_database():
     # Create the base directory for screenshots
@@ -21,7 +21,19 @@ def setup_database():
     with closing(sqlite3.connect('/config/brokerr.db')) as connection:
         with closing(connection.cursor()) as cursor:
             # Create trackers table if it doesn't exist
-            cursor.execute("CREATE TABLE IF NOT EXISTS trackers(tracker TEXT PRIMARY KEY, last_insured INTEGER, num_insured INTEGER, favicon_path TEXT)")
+            cursor.execute('''
+                            CREATE TABLE IF NOT EXISTS trackers(
+                            tracker TEXT PRIMARY KEY,
+                            last_insured INTEGER,
+                            num_insured INTEGER,
+                            favicon_path TEXT,
+                            salt TEXT,
+                            ops REAL,
+                            mem REAL,
+                            username TEXT,
+                            password TEXT
+                           )
+            ''')
             # Create insurance table if it doesn't exist
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS insurance(
@@ -89,3 +101,40 @@ def get_trackers_without_favicon():
         with closing(connection.cursor()) as cursor:
             res = cursor.execute("SELECT tracker FROM trackers WHERE favicon_path IS NULL")
             return res.fetchall()
+        
+def is_master_pass_set() -> bool:
+    if not redis_db.exists('masterPassword'):
+        return False
+    elif redis_db.get('masterPassword') is None:
+        return False
+    else:
+        return True
+
+def try_set_master_pass(old_password: str, new_password: str) -> dict:
+    existing_pass = redis_db.get('masterPassword')
+
+    if existing_pass is None:
+        if redis_db.set('masterPassword', new_password):
+            return {
+                "success": True,
+                "message": "Password set"
+            }
+
+    if old_password != existing_pass:
+        return {
+            "success": False,
+            "message": "Password doesn't match"
+        }
+        
+    if existing_pass == old_password:
+        if redis_db.set('masterPassword', new_password):
+            return {
+                "success": True,
+                "message": "Password updated successfully"
+            }
+    
+    # Something went wrong
+    return {
+        "success": False,
+        "message": "An error occurred. Please try again."
+    }

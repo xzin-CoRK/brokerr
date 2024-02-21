@@ -14,9 +14,9 @@ from selenium.webdriver.remote.webelement import WebElement
 
 import sys
 sys.path.append('/brokerr')
-from common import common
-from common import dataLayer
-from common import yamlLayer
+from utils import common
+from utils import dataLayer
+from utils import yamlLayer
 
 class brokerrWorker():
     def __init__(self) -> None:

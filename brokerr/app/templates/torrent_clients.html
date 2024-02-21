@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="d-flex p-2">
+    <div class="me-auto">
+        <h1>Torrent Clients</h1>
+    </div>
+    <div>
+        <button id="btnAddClient" type="button" {% if button_disabled%}disabled{% endif %}
+            class="btn btn-secondary btn-lg" onclick="showAddClientModal()">
+            <span>Add Client</span>
+        </button>
+    </div>
+</div>
+
+<ul id="settings-nav" class="nav nav-underline">
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{{url_for('settings.tracker_settings')}}">Trackers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Torrent Clients</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{{url_for('settings.master_password')}}">Master Password</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{{url_for('settings.tasks')}}">Tasks</a>
+    </li>
+</ul>
+
+{% if is_master_password_set == False %}
+
+<div class="alert alert-danger mx-5 my-3">
+    <p>Your master password is not set. Unable to add or modify torrent clients until a master password is set.</p>
+    <p>
+        <a href="{{url_for('settings.master_password')}}">Set master password</a>
+    </p>
+</div>
+
+{% else %}
+
+
+
+{% endif %}
+
+{% endblock %}

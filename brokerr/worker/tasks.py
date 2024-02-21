@@ -8,9 +8,9 @@ from urllib.parse import urlsplit
 logger = get_task_logger(__name__)
 
 sys.path.append('/brokerr')
-from common import yamlLayer
-from common import dataLayer
-from common import common
+from utils import yamlLayer
+from utils import dataLayer
+from utils import common
 from app.app import celery_app
 
 @celery_app.task(name='get_favicons')

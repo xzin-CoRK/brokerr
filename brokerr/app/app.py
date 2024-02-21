@@ -2,9 +2,10 @@ from celery import Celery
 from celery import Task
 from flask import Blueprint, Flask, render_template
 
-from app.api.views import api_bp
+from app.api.views import api_blueprint
 from app.home.views import home_bp
 from app.tracker.views import tracker_bp
+from app.settings.views import settings_blueprint
 from app.extensions import debug_toolbar
 
 static_pages = Blueprint("static_pages", __name__)
@@ -61,9 +62,10 @@ def create_app(settings_override=None):
         return dict(app_version=app.config.get('APP_VERSION', 'unknown'))
 
     # Register the blueprints
-    app.register_blueprint(api_bp)
+    app.register_blueprint(api_blueprint)
     app.register_blueprint(home_bp)
     app.register_blueprint(tracker_bp)
+    app.register_blueprint(settings_blueprint)
     app.register_blueprint(static_pages)
 
 
@@ -89,10 +91,6 @@ def extensions(app):
     return None
 
 # region Simple Routes
-@static_pages.route('/about')
-def about():
-    return render_template('about.html')
-
 @static_pages.route('/help')
 def help():
     return render_template('help.html')

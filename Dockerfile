@@ -24,9 +24,8 @@ WORKDIR /
 #    adduser --disabled-password --gecos '' --uid $PUID --gid $PGUID brokerr-user && \
     # install packages
 
-    # First remove firefox snap package so we can install DEB
 RUN apt-get update && apt-get install -y \
-    firefox-esr wget python3-pip supervisor \
+    firefox-esr wget python3-pip supervisor redis-server redis-tools \
     && wget $GECKODRIVER_URL -O geckodriver-v0.34.0-linux64.tar.gz && \
     tar -xzf geckodriver-v0.34.0-linux64.tar.gz -C /usr/bin && \
     chmod +x /usr/bin/geckodriver && \
@@ -37,6 +36,8 @@ RUN apt-get update && apt-get install -y \
 
 # Copy the supervisor configuration file
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Copy the redis configuration file
+COPY redis.conf /etc/redis/redis.conf
     
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \

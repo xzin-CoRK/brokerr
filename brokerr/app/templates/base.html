@@ -7,6 +7,7 @@
     <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='brokerr.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', filename='color-modes.js') }}"></script>
+    <script src="{{ url_for('static', filename='brokerr.js') }}"></script>
 
     {% block head %}
     <title>{% block title %}{% endblock %} - brokerr</title>
@@ -29,7 +30,7 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
+                        <a class="nav-link" href="{{url_for('settings.tracker_settings')}}">Settings</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/help">Help</a>
