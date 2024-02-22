@@ -1,11 +1,13 @@
 from celery import Celery
 from celery import Task
 from flask import Blueprint, Flask, render_template
+import secrets
 
 from data import dataLayer
 from data.model import User, Tracker, Insurance
 
 # Import views
+from app.auth.views import auth_blueprint
 from app.api.views import api_blueprint
 from app.home.views import home_bp
 from app.tracker.views import tracker_bp
@@ -14,6 +16,7 @@ from app.settings.views import settings_blueprint
 # Import extensions
 from app.extensions import db
 from app.extensions import debug_toolbar
+from app.extensions import login_manager
 
 static_pages = Blueprint("static_pages", __name__)
 
@@ -69,6 +72,7 @@ def create_app(settings_override=None):
 
     # Register the blueprints
     app.register_blueprint(api_blueprint)
+    app.register_blueprint(auth_blueprint)
     app.register_blueprint(home_bp)
     app.register_blueprint(tracker_bp)
     app.register_blueprint(settings_blueprint)
@@ -79,7 +83,7 @@ def create_app(settings_override=None):
     app.debug = True
 
     # set a 'SECRET_KEY' to enable the Flask session cookies
-    app.config['SECRET_KEY'] = 'IAMTRYINGTODEBUGTHISFLASKAPPLICATIONKTHXBYE'
+    app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 
     # Initialize the extensions
     extensions(app)
@@ -97,9 +101,13 @@ def extensions(app):
     :param app: Flask application instance
     :return: None
     """
-    print(f"Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    
     debug_toolbar.init_app(app)
     db.init_app(app)
+    login_manager.init_app(app)
+
+    # Redirect unauthenticated requests to the login page
+    login_manager.login_view = 'auth.login'
 
     return None
 

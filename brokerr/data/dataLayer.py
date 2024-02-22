@@ -5,10 +5,14 @@ from redis import Redis
 from config.settings import REDIS_URL
 
 from app.extensions import db
-from data.model import Insurance, Tracker
+from app.extensions import login_manager
+from data.model import Insurance, Tracker, User
 
 redis_db = Redis.from_url(REDIS_URL)
 
+@login_manager.user_loader
+def get_user(user_id):
+    return User.query((int(user_id)))
 
 def get_recent_insurance(tracker: str) -> list:
     results = db.session.execute(db.select(Insurance).filter_by(tracker_id=tracker)).scalars()

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='brokerr.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='color-modes.js') }}"></script>
+    <script src="{{ url_for('static', filename='brokerr.js') }}"></script>
+
+    {% block head %}
+    <title>{% block title %}Login{% endblock %} - brokerr</title>
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <nav class=" navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">brokerr</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('settings.tracker_settings')}}">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/help">Help</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-md-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" rel="noopener" href="https://www.github.com/xzin-cork">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-github" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-item py-2 py-lg-1 col-12 col-lg-auto">
+                        <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
+                        <hr class="d-lg-none my-2 text-white-50">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">{{app_version}}</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="container-fluid vh-90">
+            <div class="d-flex flex-column align-items-center">
+                <div class="alert alert-secondary m-3 col-md-8 text-center">
+                    <h4 class="alert-heading">brokerr takes your security seriously</h4>
+                    <p>Similar to password managers like KeePass and LastPass, the password you enter will be used as a
+                        master password to encrypt all of your sensitive information such as API keys and site
+                        credentials.
+                    </p>
+                    <p>
+                        <span>So please, <strong>choose a strong, unique password</strong>.</span>
+                    </p>
+                    <p>If you lose or forget your password, you'll need to re-enter all your saved credentials within
+                        brokerr.</p>
+                </div>
+                <div class="col-md-5 mt-5">
+                    <h1>Register</h1>
+                    <form id="registerForm" class="mb-5" action="/register">
+                        {{form.csrf_token}}
+                        <fieldset>
+                            <div class="form-floating mb-2 has-danger">
+                                {{ form.username(class='form-control') }}
+                                <label for="username">Username</label>
+                                {% if form.username.errors %}
+                                {% for error in form.username.errors %}
+                                <div class="invalid-feedback">{{error}}</div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="form-floating mb-2">
+                                {{ form.password(class='form-control') }}
+                                <label for="password">Password</label>
+                            </div>
+                            <div class="form-floating mb-2 has-danger">
+                                {{ form.confirm(class='form-control') }}
+                                <label for="confirm">Confirm Password</label>
+                                {% if form.confirm.errors %}
+                                {% for error in form.confirm.errors %}
+                                <div class="invalid-feedback">{{error}}</div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+
+                        </fieldset>
+                        <div class="row mt-3">
+                            <div class="col-md-2 ms-auto">
+                                <input type="submit" class="btn btn-primary p-2" id="btnSubmit" style="width:100%"
+                                    value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='bootstrap.bundle.min.js') }}"></script>
+</body>
+
+</html>

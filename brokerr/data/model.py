@@ -8,6 +8,7 @@ class User(UserMixin, db.Model):
     __tablename__ = "user"
     
     id = Column(Integer, primary_key=True)
+    username = Column(String(256), unique=True)
     salt = Column(String(100))
     last_login = Column(DateTime)
 
