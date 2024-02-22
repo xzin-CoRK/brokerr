@@ -3,6 +3,8 @@
 {% block content %}
 <h1>Your trackers</h1>
 
+{% if has_trackers %}
+
 <ul>
     {% for tracker in trackers %}
     <li>
@@ -10,4 +12,16 @@
     </li>
     {% endfor %}
 </ul>
+
+{% else %}
+
+
+<div class="alert alert-danger">
+    You don't have any trackers configured yet. Why don't you <a href="{{ url_for('settings.tracker_settings') }}"
+        class="alert-link">visit the tracker settings
+        page</a> and set some up.
+</div>
+
+
+{% endif %}
 {% endblock %}

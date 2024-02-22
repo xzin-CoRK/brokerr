@@ -2,15 +2,21 @@ from celery import Celery
 from celery import Task
 from flask import Blueprint, Flask, render_template
 
+from data import dataLayer
+from data.model import User, Tracker, Insurance
+
+# Import views
 from app.api.views import api_blueprint
 from app.home.views import home_bp
 from app.tracker.views import tracker_bp
 from app.settings.views import settings_blueprint
+
+# Import extensions
+from app.extensions import db
 from app.extensions import debug_toolbar
 
 static_pages = Blueprint("static_pages", __name__)
 
-__version__ = "v0.1-alpha"
 
 def create_celery_app(app=None):
     """
@@ -75,7 +81,12 @@ def create_app(settings_override=None):
     # set a 'SECRET_KEY' to enable the Flask session cookies
     app.config['SECRET_KEY'] = 'IAMTRYINGTODEBUGTHISFLASKAPPLICATIONKTHXBYE'
 
+    # Initialize the extensions
     extensions(app)
+
+    # Initialize the database tables
+    with app.app_context():
+        db.create_all()
 
     return app
 
@@ -86,7 +97,9 @@ def extensions(app):
     :param app: Flask application instance
     :return: None
     """
+    print(f"Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
     debug_toolbar.init_app(app)
+    db.init_app(app)
 
     return None
 

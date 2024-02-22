@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from utils import dataLayer
+from data import dataLayer
 
 settings_blueprint = Blueprint("settings", __name__, template_folder="../templates")
 

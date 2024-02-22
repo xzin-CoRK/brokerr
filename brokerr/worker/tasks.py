@@ -9,7 +9,7 @@ logger = get_task_logger(__name__)
 
 sys.path.append('/brokerr')
 from utils import yamlLayer
-from utils import dataLayer
+from data import dataLayer
 from utils import common
 from app.app import celery_app
 

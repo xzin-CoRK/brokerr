@@ -6,6 +6,9 @@ DEBUG = bool(strtobool(os.getenv("FLASK_DEBUG", "false")))
 # Redis
 REDIS_URL = "redis://127.0.0.1:6379/0"
 
+# SQL Alchemy
+SQLALCHEMY_DATABASE_URI = 'sqlite:///brokerr.db'
+
 # Celery
 CELERY_CONFIG = {
     "broker_url": REDIS_URL,
