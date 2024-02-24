@@ -40,3 +40,8 @@ ul {
     position: relative;
     z-index: 100;
 }
+.error-text {
+    color:#e74c3c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}

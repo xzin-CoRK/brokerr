@@ -1,18 +1,16 @@
-import os
-import sqlite3
-from contextlib import closing
 from redis import Redis
+from sqlalchemy import select
 from config.settings import REDIS_URL
 
 from app.extensions import db
-from app.extensions import login_manager
 from data.model import Insurance, Tracker, User
 
 redis_db = Redis.from_url(REDIS_URL)
 
-@login_manager.user_loader
-def get_user(user_id):
-    return User.query((int(user_id)))
+def get_user_by_id(user_id: str):
+    return db.session.scalars(
+        select(User).where(User.id==int(user_id))
+    ).one_or_none()
 
 def get_recent_insurance(tracker: str) -> list:
     results = db.session.execute(db.select(Insurance).filter_by(tracker_id=tracker)).scalars()
@@ -33,23 +31,34 @@ def store_success(tracker_id, timestamp, image_path):
     db.session.add(insurance)
     db.session.commit()
 
+def get_user_by_username(username: str) -> (User | None):
+    """
+    Return a User based on their username
+    
+    :param username: The user to retrieve
+    :return: User object if found, otherwise None
+    """
+    return db.session.scalars(
+        select(User).where(User.username==username)
+    ).one_or_none()
+
 
 def get_trackers_without_favicon():
     return Tracker.query.filter(Tracker.favicon_path.is_(None)).all()
         
 def is_master_pass_set() -> bool:
-    if not redis_db.exists('masterPassword'):
+    if not redis_db.exists('master_password'):
         return False
-    elif redis_db.get('masterPassword') is None:
+    elif redis_db.get('master_password') is None:
         return False
     else:
         return True
 
 def try_set_master_pass(old_password: str, new_password: str) -> dict:
-    existing_pass = redis_db.get('masterPassword')
+    existing_pass = redis_db.get('master_password')
 
     if existing_pass is None:
-        if redis_db.set('masterPassword', new_password):
+        if redis_db.set('master_password', new_password):
             return {
                 "success": True,
                 "message": "Password set"
@@ -62,7 +71,7 @@ def try_set_master_pass(old_password: str, new_password: str) -> dict:
         }
         
     if existing_pass == old_password:
-        if redis_db.set('masterPassword', new_password):
+        if redis_db.set('master_password', new_password):
             return {
                 "success": True,
                 "message": "Password updated successfully"

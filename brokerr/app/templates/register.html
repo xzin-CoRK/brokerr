@@ -10,7 +10,7 @@
     <script src="{{ url_for('static', filename='brokerr.js') }}"></script>
 
     {% block head %}
-    <title>{% block title %}Login{% endblock %} - brokerr</title>
+    <title>{% block title %}Register{% endblock %} - brokerr</title>
     {% endblock %}
 
 </head>
@@ -53,6 +53,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">{{app_version}}</a>
                     </li>
+                    <li class="nav-item py-2 py-lg-1 col-12 col-lg-auto">
+                        <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
+                        <hr class="d-lg-none my-2 text-white-50">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('auth.login')}}">Login</a>
+                    </li>
                 </ul>
 
             </div>
@@ -76,37 +83,34 @@
                 </div>
                 <div class="col-md-5 mt-5">
                     <h1>Register</h1>
-                    <form id="registerForm" class="mb-5" action="/register">
-                        {{form.csrf_token}}
+                    <form id="registerForm" class="mb-5" action="{{ url_for('auth.register') }}" method="post">
+                        {% if form.errors %}
+                        <ul class="errors">
+                            {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                            {% for error in field_errors %}
+                            <li class="error-text">{{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                         <fieldset>
                             <div class="form-floating mb-2 has-danger">
                                 {{ form.username(class='form-control') }}
                                 <label for="username">Username</label>
-                                {% if form.username.errors %}
-                                {% for error in form.username.errors %}
-                                <div class="invalid-feedback">{{error}}</div>
-                                {% endfor %}
-                                {% endif %}
                             </div>
                             <div class="form-floating mb-2">
                                 {{ form.password(class='form-control') }}
                                 <label for="password">Password</label>
                             </div>
                             <div class="form-floating mb-2 has-danger">
-                                {{ form.confirm(class='form-control') }}
+                                {{ form.password2(class='form-control') }}
                                 <label for="confirm">Confirm Password</label>
-                                {% if form.confirm.errors %}
-                                {% for error in form.confirm.errors %}
-                                <div class="invalid-feedback">{{error}}</div>
-                                {% endfor %}
-                                {% endif %}
                             </div>
 
                         </fieldset>
                         <div class="row mt-3">
                             <div class="col-md-2 ms-auto">
-                                <input type="submit" class="btn btn-primary p-2" id="btnSubmit" style="width:100%"
-                                    value="Submit">
+                                {{form.submit(class='btn btn-primary p-2')}}
                             </div>
                         </div>
                     </form>
@@ -115,7 +119,6 @@
         </div>
 
     </main>
-
     <script src="{{ url_for('static', filename='bootstrap.bundle.min.js') }}"></script>
 </body>
 

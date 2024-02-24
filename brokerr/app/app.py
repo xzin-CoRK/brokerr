@@ -1,7 +1,7 @@
 from celery import Celery
 from celery import Task
 from flask import Blueprint, Flask, render_template
-import secrets
+import os
 
 from data import dataLayer
 from data.model import User, Tracker, Insurance
@@ -82,9 +82,6 @@ def create_app(settings_override=None):
     # the toolbar is only enabled in debug mode:
     app.debug = True
 
-    # set a 'SECRET_KEY' to enable the Flask session cookies
-    app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
-
     # Initialize the extensions
     extensions(app)
 
@@ -102,14 +99,27 @@ def extensions(app):
     :return: None
     """
     
+    # DEBUG only: Register debug toolbar
     debug_toolbar.init_app(app)
+
+    # Register the SQLAlchemy database
     db.init_app(app)
+
+    # Register the Flask-login login manager
+    login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    # Redirect unauthenticated requests to the login page
-    login_manager.login_view = 'auth.login'
-
     return None
+
+@login_manager.user_loader
+def get_user(user_id: str):
+    """
+    Used by Flask-Login to retrieve the current used based on the user id stored in session cookie
+
+    :param user_id: str user id taken from the session cookie
+    :return: (User | None)
+    """
+    return dataLayer.get_user_by_id(user_id)
 
 # region Simple Routes
 @static_pages.route('/help')

@@ -1,15 +1,17 @@
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, LargeBinary
 from sqlalchemy import event, text
 from sqlalchemy.orm import relationship
 from app.extensions import db
+
+from data import dataLayer
 
 class User(UserMixin, db.Model):
     __tablename__ = "user"
     
     id = Column(Integer, primary_key=True)
     username = Column(String(256), unique=True)
-    salt = Column(String(100))
+    hash = Column(LargeBinary)
     last_login = Column(DateTime)
 
 class Tracker(db.Model):
@@ -21,8 +23,8 @@ class Tracker(db.Model):
     last_captured = Column(DateTime)
     times_captured = Column(Integer)
     favicon_path = Column(String(256))
-    salt = Column(String(100))
-    credentials = Column(Text)
+    salt = Column(String(100), nullable = False)
+    hash = Column(Text, nullable = False)
 
 class Insurance(db.Model):
     __tablename__ = "insurance"

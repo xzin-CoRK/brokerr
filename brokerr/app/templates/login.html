@@ -53,6 +53,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">{{app_version}}</a>
                     </li>
+                    <li class="nav-item py-2 py-lg-1 col-12 col-lg-auto">
+                        <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
+                        <hr class="d-lg-none my-2 text-white-50">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('auth.login')}}">Login</a>
+                    </li>
                 </ul>
 
             </div>
@@ -63,22 +70,19 @@
         <div class="container-fluid vh-90">
             <div class="d-flex flex-column align-items-center">
 
-                {% if error or form.password.errors %}
-                <div class="alert alert-danger m-3 col-md-5 text-center">
-                    <span><strong>{{error}}</strong></span>
-                    {% if form.password.errors %}
-                    <ul class="errors">
-                        {% for error in form.password.errors %}
-                        <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
+                {% if form.errors %}
+                <ul class="errors">
+                    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                    {% for error in field_errors %}
+                    <li class="error-text">{{ error }}</li>
+                    {% endfor %}
+                    {% endfor %}
+                </ul>
                 {% endif %}
 
                 <div class="col-md-5 mt-5">
                     <h1>Login</h1>
-                    <form id="loginForm" class="mb-5" action="/login">
+                    <form id="loginForm" class="mb-5" action="{{ url_for('auth.login') }}" method="post">
                         {{form.csrf_token}}
                         <fieldset>
                             <div class="form-floating mb-2">
@@ -90,18 +94,18 @@
                                 <label for="password">Password</label>
                             </div>
                             <div class="form-checked">
-                                <!-- <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe"> -->
-                                {{ form.rememberMe(class='form-check-input') }}
-                                <label class="form-check-label" for="rememberMe">Remember Me</label>
+                                {{ form.remember(class='form-check-input') }}
+                                <label class="form-check-label" for="remember">Remember Me</label>
                             </div>
                         </fieldset>
                         <div class="row mt-3">
                             <div class="col-md-5">
-                                <span>First time using brokerr? <a href="{{ url_for('auth.register') }}">Register here</a></span>
+                                <span>First time using brokerr? <a href="{{ url_for('auth.register') }}">Register
+                                        here</a></span>
                             </div>
                             <div class="col-md-2 ms-auto">
-                                <input type="submit" class="btn btn-primary p-2" id="btnSubmit"
-                                    style="width:100%" value="Submit">
+                                <input type="submit" class="btn btn-primary p-2" id="btnSubmit" style="width:100%"
+                                    value="Submit">
                             </div>
                         </div>
                     </form>
