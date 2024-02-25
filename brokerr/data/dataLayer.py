@@ -46,39 +46,10 @@ def get_user_by_username(username: str) -> (User | None):
 def get_trackers_without_favicon():
     return Tracker.query.filter(Tracker.favicon_path.is_(None)).all()
         
-def is_master_pass_set() -> bool:
-    if not redis_db.exists('master_password'):
+def is_master_key_set() -> bool:
+    if not redis_db.exists('master_key'):
         return False
-    elif redis_db.get('master_password') is None:
+    elif redis_db.get('master_key') is None:
         return False
     else:
         return True
-
-def try_set_master_pass(old_password: str, new_password: str) -> dict:
-    existing_pass = redis_db.get('master_password')
-
-    if existing_pass is None:
-        if redis_db.set('master_password', new_password):
-            return {
-                "success": True,
-                "message": "Password set"
-            }
-
-    if old_password != existing_pass:
-        return {
-            "success": False,
-            "message": "Password doesn't match"
-        }
-        
-    if existing_pass == old_password:
-        if redis_db.set('master_password', new_password):
-            return {
-                "success": True,
-                "message": "Password updated successfully"
-            }
-    
-    # Something went wrong
-    return {
-        "success": False,
-        "message": "An error occurred. Please try again."
-    }

@@ -34,6 +34,11 @@ def login():
         user = dataLayer.get_user_by_username(username)
 
         if user and security.validate_password(user.hash, password):
+
+            # re-store the master key if redis memory has been wiped
+            if not dataLayer.is_master_key_set():
+                security.generate_master_key(password)
+
             login_user(user, remember = remember)
             return redirect(url_for('home.home'))
         else:

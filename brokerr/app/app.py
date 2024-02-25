@@ -1,6 +1,6 @@
 from celery import Celery
 from celery import Task
-from flask import Blueprint, Flask, render_template
+from flask import Blueprint, Flask, render_template, request
 import os
 
 from data import dataLayer
@@ -69,6 +69,7 @@ def create_app(settings_override=None):
     @app.context_processor
     def inject_version():
         return dict(app_version=app.config.get('APP_VERSION', 'unknown'))
+
 
     # Register the blueprints
     app.register_blueprint(api_blueprint)

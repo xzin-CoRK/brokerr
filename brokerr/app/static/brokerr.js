@@ -50,13 +50,7 @@ function addTracker() {
   var loginUrl = document.getElementById("loginUrl");
   var username = document.getElementById("username");
   var password = document.getElementById("password");
-
-  var data = {
-    "trackerName": trackerName,
-    "loginUrl": loginUrl,
-    "username": username,
-    "password": password,
-  }
+  var screenshotUrl = document.getElementById("screenshotUrl");
 
   // Call the backend
   fetch("/addTracker", {
@@ -64,11 +58,19 @@ function addTracker() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ data: data })
+    body: JSON.stringify({
+      "trackerName": trackerName.value,
+      "loginUrl": loginUrl.value,
+      "username": username.value,
+      "password": password.value,
+      "screenshot_url": screenshotUrl.value
+    })
   })
   .then((response) => response.json())
   .then((data) => {
-    
+    if(data.success) {
+      location.reload()
+    }
   })
 }
 

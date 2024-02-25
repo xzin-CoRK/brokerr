@@ -18,13 +18,14 @@ class Tracker(db.Model):
     __tablename__ = "tracker"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(100))
-    login_url = Column(Text)
+    name = Column(String(100), nullable = False, unique = True)
+    login_url = Column(Text, nullable = False)
+    screenshot_url = Column(Text)
     last_captured = Column(DateTime)
     times_captured = Column(Integer)
     favicon_path = Column(String(256))
     salt = Column(String(100), nullable = False)
-    hash = Column(Text, nullable = False)
+    credentials = Column(LargeBinary, nullable = False)
 
 class Insurance(db.Model):
     __tablename__ = "insurance"
